@@ -1,0 +1,78 @@
+Int latchPin = 12 ;
+Int clockPin = 11 ;
+Int dataPin = 13 ;
+Const  int HC595_COUNT = 2 ;
+Byte ledStatus [HC595_COUNT] = { 0 };
+ Thiết lập void ()
+{
+  PinMode (latchPin, OUTPUT);
+  PinMode (clockPin, OUTPUT);
+  PinMode (dataPin, OUTPUT);
+}
+Void  fillValueToArray (giá trị byte) 
+{
+  Cho ( int i = 0 ; i <HC595_COUNT; i + = 1 )
+  {
+    LedStatus [i] = giá trị;
+  }
+}
+Void  TshiftOutHC595 ( int dataPin, int clockPin, byte ledStatus []) 
+{
+  DigitalWrite (latchPin, LOW);  
+  Cho ( int i = 0 ; i <HC595_COUNT; i ++) 
+  {
+    ShiftOut (dataPin, clockPin, MSBFIRST, ledStatus [i]);  
+  } 
+  DigitalWrite (latchPin, CAO);
+}
+Void  PshiftOutHC595 ( int dataPin, int clockPin, byte ledStatus []) 
+{
+  DigitalWrite (latchPin, LOW); 
+  Cho ( int i = 0 ; i <HC595_COUNT; i ++
+  {
+    ShiftOut (dataPin, clockPin, LSBFIRST, ledStatus [i]);  
+  } 
+  DigitalWrite (latchPin, CAO);
+}
+Void  loop () {
+  {
+    FillValueToArray ( 0 );
+    Cho ( int i = HC595_COUNT - 1 ; i> = 0 , i--) 
+      Cho (byte j = 0 ; j < 8 ; j ++) 
+	{
+      LedStatus [i] = (ledStatus [i] << 1 ) | 1 ;
+      TshiftOutHC595 (dataPin, clockPin, ledStatus);
+      Chậm trễ ( 100 ); // Dừng chạy chương trình khoảng 500 mili giây để xem đèn hiệu hiệu ứng LED
+    }    
+  }
+  
+  // Tắt tuần tự
+  Cho ( int i = HC595_COUNT - 1 ; i> = 0 , i--) {
+    Cho (byte j = 0 ; j < 8 ; j ++) {
+      LedStatus [i] = (ledStatus [i] << 1 );
+      TshiftOutHC595 (dataPin, clockPin, ledStatus);
+      Chậm trễ ( 100 ); // Dừng chạy chương trình khoảng 500 mili giây để xem đèn hiệu hiệu ứng LED
+    }    
+  }
+  }
+  {
+  FillValueToArray ( 0 );
+  // Enable week tự
+  Cho ( int i = 0 ; i <HC595_COUNT; i ++) {
+    Cho (byte j = 0 ; j < 8 ; j ++) {
+      LedStatus [i] = (ledStatus [i] << 1 ) | 1 ;
+      PshiftOutHC595 (dataPin, clockPin, ledStatus);
+      Chậm trễ ( 100 ); // Dừng chạy chương trình khoảng 500 mili giây để xem đèn hiệu hiệu ứng LED
+    }    
+  }
+  
+  // Tắt tuần tự
+  Cho ( int i = 0 ; i <HC595_COUNT; i ++) {
+    Cho (byte j = 0 ; j < 8 ; j ++) {
+      LedStatus [i] = (ledStatus [i] << 1 );
+      PshiftOutHC595 (dataPin, clockPin, ledStatus);
+      Chậm trễ ( 100 ); // Dừng chạy chương trình khoảng 500 mili giây để xem đèn hiệu hiệu ứng LED
+    }    
+  } 
+ }
+}
